@@ -23,15 +23,14 @@ pipeline {
                 script {
                     // Install dependencies directly without a virtual environment
                     sh 'pip install -r requirements.txt'
-                    }
+                }
             }
         }
-
 
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    // Run SonarQube analysis
+                    // Run SonarQube analysis, excluding the virtual environment directory
                     withSonarQubeEnv(SONARQUBE_SERVER) {
                         sh "${SCANNER_HOME}/bin/sonar-scanner -Dsonar.projectKey=cobrasonarqube_lab1 -Dsonar.sources=. -Dsonar.host.url=http://10.0.0.246:9000 -Dsonar.login=sqp_3379bf214842a1a5c2aec0abf96d3f469452641b -Dsonar.exclusions=venv/**" // Adjust parameters as needed
                     }
@@ -42,8 +41,8 @@ pipeline {
         stage('Run Tests for Landing App') {
             steps {
                 script {
-                    // Activate the virtual environment and run tests for the landing app
-                    sh 'source venv/bin/activate && python manage.py test landing' // Run tests for landing app only
+                    // Run tests for the landing app directly
+                    sh 'python manage.py test landing' // Run tests for landing app only
                 }
             }
         }
