@@ -12,7 +12,7 @@ pipeline {
             steps {
                 script {
                     // Checkout code from your GitHub repository
-                    git 'https://github.com/sthanubhav/CobraJenkins.git' // Replace with your repo URL
+                    git branch: 'main', 'https://github.com/sthanubhav/CobraJenkins.git' // Replace with your repo URL
                 }
             }
         }
