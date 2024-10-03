@@ -13,7 +13,8 @@ pipeline {
             steps {
                 script {
                     // Checkout code from your GitHub repository using the Git tool
-                    sh "${GIT_HOME}/bin/git clone -b main https://github.com/sthanubhav/CobraJenkins.git" // Replace with your repo URL
+                    git branch: 'main', url: 'https://github.com/sthanubhav/CobraJenkins.git'
+
                 }
             }
         }
