@@ -41,8 +41,8 @@ pipeline {
         stage('Run Tests for Landing App') {
             steps {
                 script {
-                    // Run tests for the landing app directly
-                    sh 'python manage.py test landing' // Run tests for landing app only
+                    // Run tests for the landing app directly using python3
+                    sh 'python3 manage.py test landing' // Run tests for landing app only
                 }
             }
         }
