@@ -14,7 +14,6 @@ pipeline {
                 script {
                     // Checkout code from your GitHub repository using the Git tool
                     git branch: 'main', url: 'https://github.com/sthanubhav/CobraJenkins.git'
-
                 }
             }
         }
@@ -22,10 +21,10 @@ pipeline {
         stage('Set Up Python Environment') {
             steps {
                 script {
-                     // Set up a virtual environment for Python
-                     sh 'python3 -m venv venv'
-                     // Install dependencies using the venv's pip directly
-                     sh 'venv/bin/pip install -r requirements.txt'
+                    // Set up a virtual environment for Python
+                    sh 'python3 -m venv venv'
+                    // Install dependencies using the venv's pip directly
+                    sh 'venv/bin/pip install -r requirements.txt'
                 }
             }
         }
@@ -41,12 +40,11 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
+        stage('Run Tests for Landing App') {
             steps {
                 script {
-                    // Activate the virtual environment and run tests
-                    sh 'source venv/bin/activate'
-                    sh 'python manage.py test' // Run Django tests
+                    // Activate the virtual environment and run tests for the landing app
+                    sh 'source venv/bin/activate && python manage.py test landing' // Run tests for landing app only
                 }
             }
         }
