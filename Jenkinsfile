@@ -5,14 +5,15 @@ pipeline {
         // Define environment variables for SonarQube
         SONARQUBE_SERVER = 'CobraSonarqube' // The name of your SonarQube server configured in Jenkins
         SCANNER_HOME = tool 'SonarQubeScanner' // This should match the installation name in Jenkins
+        GIT_HOME = tool 'Git' // Use the Git tool name
     }
 
     stages {
         stage('Checkout') {
             steps {
                 script {
-                    // Checkout code from your GitHub repository
-                    git branch: 'main', 'https://github.com/sthanubhav/CobraJenkins.git' // Replace with your repo URL
+                    // Checkout code from your GitHub repository using the Git tool
+                    sh "${GIT_HOME}/bin/git clone -b main https://github.com/sthanubhav/CobraJenkins.git" // Replace with your repo URL
                 }
             }
         }
@@ -33,7 +34,7 @@ pipeline {
                 script {
                     // Run SonarQube analysis
                     withSonarQubeEnv(SONARQUBE_SERVER) {
-                        sh "${SCANNER_HOME}/bin/sonar-scanner -Dsonar.projectKey=your-project-key -Dsonar.sources=. -Dsonar.host.url=http://10.0.0.246:9000 -Dsonar.login=your-token" // Adjust parameters as needed
+                        sh "${SCANNER_HOME}/bin/sonar-scanner -Dsonar.projectKey=cobrasonarqube_lab1 -Dsonar.sources=. -Dsonar.host.url=http://10.0.0.246:9000 -Dsonar.login=sqp_3379bf214842a1a5c2aec0abf96d3f469452641b" // Adjust parameters as needed
                     }
                 }
             }
