@@ -21,11 +21,7 @@ pipeline {
         stage('Set Up Python Environment') {
             steps {
                 script {
-                    // Set up a virtual environment for Python in a way that works with Jenkins on Ubuntu
-                    sh 'python3 -m venv venv'
-                    
-                    // Install dependencies using the virtual environment's pip
-                    sh './venv/bin/pip install -r requirements.txt'
+                    sh 'venv/bin/python manage.py test landing'
                 }
             }
         }
