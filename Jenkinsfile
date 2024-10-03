@@ -21,20 +21,22 @@ pipeline {
         stage('Set Up Python Environment') {
             steps {
                 script {
-                    // Set up a virtual environment for Python
+                    // Set up a virtual environment for Python in a way that works with Jenkins on Ubuntu
                     sh 'python3 -m venv venv'
-                    // Install dependencies using the venv's pip directly
-                    sh 'venv/bin/pip install -r requirements.txt'
+                    
+                    // Install dependencies using the virtual environment's pip
+                    sh './venv/bin/pip install -r requirements.txt'
                 }
             }
         }
+
 
         stage('SonarQube Analysis') {
             steps {
                 script {
                     // Run SonarQube analysis
                     withSonarQubeEnv(SONARQUBE_SERVER) {
-                        sh "${SCANNER_HOME}/bin/sonar-scanner -Dsonar.projectKey=cobrasonarqube_lab1 -Dsonar.sources=. -Dsonar.host.url=http://10.0.0.246:9000 -Dsonar.login=sqp_3379bf214842a1a5c2aec0abf96d3f469452641b" // Adjust parameters as needed
+                        sh "${SCANNER_HOME}/bin/sonar-scanner -Dsonar.projectKey=cobrasonarqube_lab1 -Dsonar.sources=. -Dsonar.host.url=http://10.0.0.246:9000 -Dsonar.login=sqp_3379bf214842a1a5c2aec0abf96d3f469452641b -Dsonar.exclusions=venv/**" // Adjust parameters as needed
                     }
                 }
             }
