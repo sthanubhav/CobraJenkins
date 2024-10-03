@@ -21,7 +21,10 @@ pipeline {
         stage('Set Up Python Environment') {
             steps {
                 script {
-                    sh 'venv/bin/python manage.py test landing'
+                    // Set up a virtual environment for Python
+                    sh 'python3 -m venv venv'
+                    // Activate the virtual environment and install dependencies
+                     sh '. venv/bin/activate && pip install -r requirements.txt'
                 }
             }
         }
