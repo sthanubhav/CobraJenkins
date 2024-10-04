@@ -41,7 +41,7 @@ pipeline {
             steps {
                 script {
                     // Run tests for Django's landing app
-                    sh 'python manage.py test landing'
+                    sh 'python3 manage.py test landing'
                 }
             }
         }
