@@ -51,19 +51,24 @@ pipeline {
             }
         }
 
-        stage('OWASP ZAP DAST Scan') {
+        stage('Trigger ZAP Scan') {
             steps {
                 script {
-                    // Create the reports directory if it doesn't exist
-                    sh "mkdir -p ${REPORT_DIR}"
+                    // Ensure ZAP is running
+                    // (Assuming ZAP is already running)
 
-                    // Run OWASP ZAP scan for the Django app hosted at http://10.0.0.166:8000
-                    sh """
-                    curl "http://localhost:8081/JSON/ascan/action/scan/?apikey=${ZAP_API_KEY}&url=${TARGET_URL}&recurse=true&inScopeOnly=true"
-                    """
-                    // Wait for the scan to finish (optional: implement better wait logic)
-                    sleep 5 // Adjust based on your scan duration
-                    curl "http://localhost:8081/OTHER/core/other/htmlreport/?apikey=${ZAP_API_KEY}&output=${HTML_REPORT}"
+                    // Wait a bit for ZAP to initialize
+                    sleep 5
+                    
+                    // Check if the URL is accessible
+                    def response = sh(script: 'curl -I http://10.0.0.166:8000/', returnStdout: true)
+                    echo "Response: ${response}"
+
+                    // Trigger the scan
+                    def scanResponse = sh(script: 'curl -I "http://localhost:8081/JSON/ascan/action/scan/?apikey=cmhcdvblqj5iekdgc6ek6vjtcc&url=http://10.0.0.166:8000/&recurse=true&inScopeOnly=true"', returnStdout: true)
+                    echo "Scan Response: ${scanResponse}"
+
+                    // Handle scan response if needed
                 }
             }
         }
