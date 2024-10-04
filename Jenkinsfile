@@ -1,18 +1,18 @@
 pipeline {
-    agent any // This allows Jenkins to run on any available agent
+    agent any
 
     environment {
-        // Define environment variables for SonarQube
-        SONARQUBE_SERVER = 'CobraSonarqube' // The name of your SonarQube server configured in Jenkins
-        SCANNER_HOME = tool 'SonarQubeScanner' // This should match the installation name in Jenkins
-        GIT_HOME = tool 'Git' // Use the Git tool name
+        SONARQUBE_SERVER = 'CobraSonarqube' 
+        SCANNER_HOME = tool 'SonarQubeScanner'
+        GIT_HOME = tool 'Git'
+        ZAP_API_KEY = 'cmhcdvblqj5iekdgc6ek6vjtcc' // Your ZAP API key
     }
 
     stages {
         stage('Checkout') {
             steps {
                 script {
-                    // Checkout code from your GitHub repository using the Git tool
+                    // Checkout the code from GitHub
                     git branch: 'main', url: 'https://github.com/sthanubhav/CobraJenkins.git'
                 }
             }
@@ -21,7 +21,7 @@ pipeline {
         stage('Set Up Python Environment') {
             steps {
                 script {
-                    // Install dependencies directly without a virtual environment
+                    // Install dependencies
                     sh 'pip install -r requirements.txt'
                 }
             }
@@ -30,9 +30,8 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    // Run SonarQube analysis, excluding the virtual environment directory
                     withSonarQubeEnv(SONARQUBE_SERVER) {
-                        sh "${SCANNER_HOME}/bin/sonar-scanner -Dsonar.projectKey=cobrasonarqube_lab1 -Dsonar.sources=. -Dsonar.host.url=http://10.0.0.246:9000 -Dsonar.login=sqp_3379bf214842a1a5c2aec0abf96d3f469452641b -Dsonar.exclusions=venv/**" // Adjust parameters as needed
+                        sh "${SCANNER_HOME}/bin/sonar-scanner -Dsonar.projectKey=cobrasonarqube_lab1 -Dsonar.sources=. -Dsonar.host.url=http://10.0.0.246:9000 -Dsonar.login=sqp_3379bf214842a1a5c2aec0abf96d3f469452641b -Dsonar.exclusions=venv/**"
                     }
                 }
             }
@@ -41,8 +40,19 @@ pipeline {
         stage('Run Tests for Landing App') {
             steps {
                 script {
-                    // Run tests for the landing app directly using python3
-                    sh 'python3 manage.py test landing' // Run tests for landing app only
+                    // Run tests for Django's landing app
+                    sh 'python manage.py test landing'
+                }
+            }
+        }
+
+        stage('OWASP ZAP DAST Scan') {
+            steps {
+                script {
+                    // Run OWASP ZAP scan for the Django app hosted at http://10.0.0.166:8000
+                    sh """
+                    curl "http://localhost:8081/JSON/ascan/action/scan/?apikey=$ZAP_API_KEY&url=http://10.0.0.166:8000/&recurse=true&inScopeOnly=true"
+                    """
                 }
             }
         }
@@ -50,10 +60,8 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // Add deployment steps if applicable (e.g., deploying to a server)
                     echo 'Deploying the application...'
-                    // Example command for deployment
-                    // sh 'your-deployment-command'
+                    // Add your deployment steps here if needed
                 }
             }
         }
