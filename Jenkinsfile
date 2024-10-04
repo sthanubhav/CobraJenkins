@@ -73,6 +73,22 @@ pipeline {
             }
         }
 
+        stage('Generate ZAP Reports') {
+            steps {
+                script {
+                    // Generate the HTML report
+                    sh "curl -s -o ${HTML_REPORT} 'http://localhost:8081/OTHER/htmlreport?apikey=cmhcdvblqj5iekdgc6ek6vjtcc'"
+
+                    // Generate the XML report
+                    sh "curl -s -o ${XML_REPORT} 'http://localhost:8081/OTHER/xmlreport?apikey=cmhcdvblqj5iekdgc6ek6vjtcc'"
+
+                    // Print the generated reports' paths
+                    echo "HTML Report: ${HTML_REPORT}"
+                    echo "XML Report: ${XML_REPORT}"
+                }
+            }
+        }
+
         stage('Deploy') {
             steps {
                 script {
